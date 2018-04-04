@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "276203288952",
+    "firebase_url": "https://tapa-buraco-256ba.firebaseio.com",
+    "project_id": "tapa-buraco-256ba",
+    "storage_bucket": "tapa-buraco-256ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276203288952:android:80fbdc42b96cc023",
+        "android_client_info": {
+          "package_name": "lfernando.tapaburaco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276203288952-sifasd7h32shk006nvp9bsafk7boa53n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lfernando.tapaburaco",
+            "certificate_hash": "3fc890ace0f907fc29b130d082f5febbfb483dc4"
+          }
+        },
+        {
+          "client_id": "276203288952-40gu00dild0s2m6o3ggin34cqtgqdqhe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLI9Hj0acvyPc4gR0oztT98mQ6quErObs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276203288952-40gu00dild0s2m6o3ggin34cqtgqdqhe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
