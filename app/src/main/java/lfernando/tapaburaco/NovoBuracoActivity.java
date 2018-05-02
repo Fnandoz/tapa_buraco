@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -40,14 +42,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class NovoBuracoActivity extends AppCompatActivity {
 
@@ -65,12 +72,18 @@ public class NovoBuracoActivity extends AppCompatActivity {
     LatLng latLngFinal;
 
     private DatabaseReference mDatabase;
+    private StorageReference mStorageRef;
 
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_LIBRARY = 2;
 
     int contadorDePontosNoMapa = 0;
+
+    AlertDialog.Builder builder;
+    AlertDialog dialog;
+
+    Marker mMarker;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,7 +121,7 @@ public class NovoBuracoActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         novaFotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +142,7 @@ public class NovoBuracoActivity extends AppCompatActivity {
                     public void onMapClick(LatLng latLng) {
                         if (contadorDePontosNoMapa==0) {
                             latLngFinal = latLng;
-                            googleMap.addMarker(new MarkerOptions().position(latLng).title("Novo buraco"));
+                            mMarker = googleMap.addMarker(new MarkerOptions().position(latLng).title("Novo buraco"));
                             contadorDePontosNoMapa++;
                         }else{
                             googleMap.clear();
@@ -141,7 +154,7 @@ public class NovoBuracoActivity extends AppCompatActivity {
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        marker.remove();
+                        mMarker.remove();
                         contadorDePontosNoMapa--;
                         return false;
                     }
@@ -155,6 +168,7 @@ public class NovoBuracoActivity extends AppCompatActivity {
         enviarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialogoCarregamento();
                 salva();
             }
         });
@@ -219,19 +233,49 @@ public class NovoBuracoActivity extends AppCompatActivity {
     }
 
     public void salva(){
+        final String d = UUID.randomUUID().toString();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Bitmap bitmap = ((BitmapDrawable) fotoImageView.getDrawable()).getBitmap();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
-        String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        Toast.makeText(this, latLngFinal.toString(), Toast.LENGTH_SHORT).show();
+        StorageReference foto = mStorageRef.child(d);
+        foto.putBytes(imageBytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                HashMap<String, String> dados = new HashMap<>();
+                dados.put("imagem", d);
+                dados.put("descricao", tituloTextView.getText().toString());
+                dados.put("impacto", String.valueOf(indiceSeekBar.getProgress()));
+                dados.put("lat", String.valueOf(latLngFinal.latitude));
+                dados.put("lon", String.valueOf(latLngFinal.longitude));
 
-        HashMap<String, String> dados = new HashMap<>();
-        dados.put("imagem", imageString);
-        dados.put("descricao", "teste");
-        dados.put("impacto", "0");
-        dados.put("latlng", latLngFinal.toString());
+                mDatabase.child("buracos").push().setValue(dados).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        limpaCampos();
+                        dialog.cancel();
+                    }
+                });
+            }
+        });
+    }
 
-        mDatabase.child("buracos").push().setValue(dados);
+
+    public void limpaCampos(){
+        fotoImageView.setImageResource(android.R.color.darker_gray);
+        tituloTextView.setText("");
+        indiceSeekBar.setProgress(0);
+        mMarker.remove();
+
+    }
+
+    public void dialogoCarregamento(){
+
+        builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.loading_view);
+        dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.show();
+
     }
 }

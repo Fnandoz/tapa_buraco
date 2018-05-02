@@ -52,4 +52,6 @@ public class ListarBuracosActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public void getData(){}
 }

@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
                             .createSignInIntentBuilder()
                             .setAvailableProviders(providers)
                             .setLogo(R.mipmap.ic_launcher_round)
+                            .setTheme(R.style.Widget_AppCompat_Light_ActionBar)
                             .build(),
                     RC_SIGN_IN);
         }
