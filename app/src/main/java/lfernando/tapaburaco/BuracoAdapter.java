@@ -1,6 +1,8 @@
 package lfernando.tapaburaco;
 
 import android.app.Activity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,14 +36,38 @@ public class BuracoAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
-        View view = activity.getLayoutInflater().inflate(android.R.layout.simple_list_item_2, parent, false);
-        Buraco buraco = buracos.get(i);
-        TextView texto1 = view.findViewById(R.id.text1);
-        TextView texto2 = view.findViewById(R.id.text2);
+        View view;
+        ViewHolder holder = null;
 
-        texto1.setText(buraco.getDescricao());
-        texto2.setText(buraco.getImpacto());
+        if (convertView == null) {
+            view = LayoutInflater.from(activity)
+                    .inflate(android.R.layout.simple_list_item_2, parent, false);
+            holder = new ViewHolder(view);
+        } else {
+            view = convertView;
+        }
+
+        Buraco buraco = buracos.get(i);
+        Log.d("LIST", "getView: "+buraco.getDescricao()+"\n"+buraco.getImpacto());
+        if (buraco.getDescricao().isEmpty()){
+            holder.texto1.setText("Buraco");
+        }else{
+            holder.texto1.setText(buraco.getDescricao());
+        }
+
+        holder.texto2.setText("B");//buraco.getImpacto());
 
         return view;
     }
+    static class ViewHolder{
+        TextView texto1;
+        TextView texto2;
+
+        public ViewHolder(View view){
+            texto1 = view.findViewById(android.R.id.text1);
+            texto2 = view.findViewById(android.R.id.text2);
+        }
+    }
 }
+
+

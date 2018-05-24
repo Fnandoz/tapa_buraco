@@ -7,6 +7,7 @@
     tools:context=".ListarBuracosActivity">
 
     <ListView
+        android:id="@+id/buracoListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -15,7 +16,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:entries="@android:array/imProtocols"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
