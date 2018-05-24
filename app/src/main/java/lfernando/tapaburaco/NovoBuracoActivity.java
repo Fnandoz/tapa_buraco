@@ -53,6 +53,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -233,6 +235,10 @@ public class NovoBuracoActivity extends AppCompatActivity {
     }
 
     public void salva(){
+        final Calendar calendar = Calendar.getInstance();
+        final SimpleDateFormat mdformat = new SimpleDateFormat("dd/MM/yyyy");
+
+
         final String d = UUID.randomUUID().toString();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Bitmap bitmap = ((BitmapDrawable) fotoImageView.getDrawable()).getBitmap();
@@ -248,6 +254,7 @@ public class NovoBuracoActivity extends AppCompatActivity {
                 dados.put("impacto", String.valueOf(indiceSeekBar.getProgress()));
                 dados.put("lat", String.valueOf(latLngFinal.latitude));
                 dados.put("lon", String.valueOf(latLngFinal.longitude));
+                dados.put("data", mdformat.format(calendar.getTime()));
 
                 mDatabase.child("buracos").push().setValue(dados).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

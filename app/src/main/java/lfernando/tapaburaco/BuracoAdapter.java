@@ -49,13 +49,15 @@ public class BuracoAdapter extends BaseAdapter {
 
         Buraco buraco = buracos.get(i);
         Log.d("LIST", "getView: "+buraco.getDescricao()+"\n"+buraco.getImpacto());
-        if (buraco.getDescricao().isEmpty()){
+
+        assert holder != null;
+        if (buraco.getDescricao().isEmpty() || buraco.getDescricao()==null){
             holder.texto1.setText("Buraco");
         }else{
             holder.texto1.setText(buraco.getDescricao());
         }
 
-        holder.texto2.setText("B");//buraco.getImpacto());
+        holder.texto2.setText(String.valueOf(buraco.getImpacto()));//buraco.getImpacto());
 
         return view;
     }
