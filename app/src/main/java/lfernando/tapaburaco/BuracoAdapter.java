@@ -1,6 +1,8 @@
 package lfernando.tapaburaco;
 
 import android.app.Activity;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +10,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class BuracoAdapter extends BaseAdapter {
     private List<Buraco> buracos;
     private Activity activity;
+    Geocoder geocoder;
+    List<Address> addresses;
 
     public BuracoAdapter(List<Buraco> buracos, Activity contexto) {
         this.buracos = buracos;
@@ -39,6 +45,10 @@ public class BuracoAdapter extends BaseAdapter {
         View view;
         ViewHolder holder = null;
 
+
+
+
+
         if (convertView == null) {
             view = LayoutInflater.from(activity)
                     .inflate(android.R.layout.simple_list_item_2, parent, false);
@@ -48,7 +58,20 @@ public class BuracoAdapter extends BaseAdapter {
         }
 
         Buraco buraco = buracos.get(i);
-        Log.d("LIST", "getView: "+buraco.getDescricao()+"\n"+buraco.getImpacto());
+
+        geocoder = new Geocoder(activity, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(buraco.getLat(), buraco.getLon(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String address = addresses.get(0).getAddressLine(0);
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName();
 
         assert holder != null;
         if (buraco.getDescricao().isEmpty() || buraco.getDescricao()==null){
@@ -57,7 +80,7 @@ public class BuracoAdapter extends BaseAdapter {
             holder.texto1.setText(buraco.getDescricao());
         }
 
-        holder.texto2.setText(String.valueOf(buraco.getImpacto()));//buraco.getImpacto());
+        holder.texto2.setText(address);
 
         return view;
     }

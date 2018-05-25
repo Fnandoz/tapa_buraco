@@ -2,14 +2,17 @@
 package lfernando.tapaburaco;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -26,12 +29,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lfernando.tapaburaco.Fragments.ListarBuracosFragment;
+import lfernando.tapaburaco.Fragments.MapaFragment;
+
 public class ListarBuracosActivity extends AppCompatActivity {
 
-    List<Buraco> buracoList;
-    BuracoAdapter adapter;
-    ListView listaView;
-    private DatabaseReference mDatabase;
+
+
+
+    ListarBuracosFragment listaFragment;
+    MapaFragment mapaFragment;
+    android.support.v4.app.FragmentTransaction transaction;
+    FloatingActionButton fab;
 
 
     @Override
@@ -57,14 +66,24 @@ public class ListarBuracosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar_buracos);
 
-        buracoList = new ArrayList<>();
-        listaView = findViewById(R.id.buracoListView);
-        adapter = new BuracoAdapter(buracoList, this);
-        listaView.setAdapter(adapter);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        listaFragment = new ListarBuracosFragment();
+        mapaFragment = new MapaFragment();
+        fab = findViewById(R.id.floatingActionButton);
 
-        getData();
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentoLayout, mapaFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Adicionar um novo", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent intent = new Intent(ListarBuracosActivity.this, NovoBuracoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void logout() {
@@ -79,37 +98,5 @@ public class ListarBuracosActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-    }
-
-    public void getData(){
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("LIST", dataSnapshot.child("buracos").getValue().toString());
-                HashMap<Object, Object> buracos = (HashMap<Object, Object>) dataSnapshot.child("buracos").getValue();
-                Log.d("LIST", ""+buracos.size());
-                for (Map.Entry<Object, Object> buraco:buracos.entrySet()) {
-                    String key = buraco.getKey().toString();
-                    HashMap<String, String> valores = (HashMap<String, String>) buraco.getValue();
-
-
-
-                    //Log.d("LIST", key);
-                    //Log.d("LIST", valores.get("lon"));
-                    Buraco b = new Buraco(key, valores.get("descricao"), valores.get("imagem"), Integer.parseInt(valores.get("impacto")),
-                            Float.parseFloat(valores.get("lat")), Float.parseFloat(valores.get("lon")));
-
-                    buracoList.add(b);
-                }
-
-                adapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }

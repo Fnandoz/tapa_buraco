@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, ListarBuracosActivity.class);
                 startActivity(intent);
+                //Toast.makeText(HomeActivity.this, "Em breve.", Toast.LENGTH_SHORT).show();
             }
         });
     }

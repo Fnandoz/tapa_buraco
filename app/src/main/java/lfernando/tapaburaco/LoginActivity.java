@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setAvailableProviders(providers)
-                            .setLogo(R.mipmap.ic_launcher_round)
+                            .setLogo(R.mipmap.ic_launcher)
                             .setTheme(R.style.Widget_AppCompat_Light_ActionBar)
                             .build(),
                     RC_SIGN_IN);
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void usuarioLogado() {
-        Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent = new Intent(this, ListarBuracosActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
