@@ -168,10 +168,14 @@ public class NovoBuracoActivity extends AppCompatActivity {
                 googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                     @Override
                     public boolean onMyLocationButtonClick() {
+                        try{
+                            Location currentLocation = googleMap.getMyLocation();
+                            LatLng meuLocal = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 17));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 
-                        Location currentLocation = googleMap.getMyLocation();
-                        LatLng meuLocal = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 17));
                         return true;
                     }
                 });

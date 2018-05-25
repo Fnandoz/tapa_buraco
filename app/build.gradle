@@ -7,8 +7,8 @@ android {
         applicationId "lfernando.tapaburaco"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 3
-        versionName "2"
+        versionCode 4
+        versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

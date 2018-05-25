@@ -96,9 +96,13 @@ public class MapaFragment extends Fragment{
                 gMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                     @Override
                     public boolean onMyLocationButtonClick() {
-                        currentLocation = googleMap.getMyLocation();
-                        LatLng meuLocal = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 17));
+                        try {
+                            currentLocation = googleMap.getMyLocation();
+                            LatLng meuLocal = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 17));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 
                         return true;
                     }
@@ -108,7 +112,6 @@ public class MapaFragment extends Fragment{
                     @Override
                     public void onMyLocationClick(@NonNull Location location) {
                         currentLocation = location;
-                        Toast.makeText(getActivity(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
                     }
                 });
 
